@@ -8,10 +8,7 @@ import java.util.Scanner;
 import org.json.JSONObject;
 import org.json.JSONArray;
 import org.json.JSONTokener;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Arrays;
+import java.util.*;
 
 public class Client
 {
@@ -41,6 +38,13 @@ public class Client
                 float pickupLong = Float.parseFloat(args[1]);
                 float dropoffLat = Float.parseFloat(args[2]);
                 float dropoffLong = Float.parseFloat(args[3]);
+                int maxPassengers = Integer.parseInt(args[4]);
+
+                if(maxPassengers > 16 || maxPassengers < 1)
+                {
+                    System.out.println("Number of max passengers is not applicable. Must be between 1-16");
+                    System.exit(1);
+                }
 
                 JSONObject json;
                 String url = "https://techtest.rideways.com/dave?pickup=" + pickupLat + "," + pickupLong + "&dropoff=" + dropoffLat + "," + dropoffLong;
@@ -52,24 +56,44 @@ public class Client
                     json = parseRequest(response.body().string());
                 }
 
+                System.out.println(json.toString());
 
+                //Create Options[] array
                 JSONArray jsonArray = (JSONArray) json.get("options");
-                Option[] options = new Option[jsonArray.length()];
+                List<Option> options = new ArrayList<Option>();
                 for (int i = 0 ; i < jsonArray.length(); i++)
                 {
                     JSONObject obj = jsonArray.getJSONObject(i);
-                    options[i] = new Option("DAVE", (String) obj.get("car_type"), (int) obj.get("price"));
+                    String carType = (String) obj.get("car_type");
+                    if(maxPassengers <= 4 && maxPassengers > 0)
+                    {
+                        if(!(carType.equals("PEOPLE_CARRIER") || carType.equals("LUXURY_PEOPLE_CARRIER") ||carType.equals("MINIBUS")))
+                            options.add(new Option("DAVE", (String) obj.get("car_type"), (int) obj.get("price")));
+                    }
+                    else if(maxPassengers <= 6 && maxPassengers > 4)
+                    {
+                        if(!(carType.equals("MINIBUS")))
+                            options.add(new Option("DAVE", (String) obj.get("car_type"), (int) obj.get("price")));
+                    }
+                    else if(maxPassengers <= 16 && maxPassengers > 6)
+                    {
+                        options.add(new Option("DAVE", (String) obj.get("car_type"), (int) obj.get("price")));
+                    }
+
                 }
 
-                Arrays.sort(options);
+                Collections.sort(options);
 
-                System.out.println(Arrays.toString(options));
+                for(Option o: options)
+                {
+                    System.out.println(o.toString());
+                }
 
 
             }
             catch(NumberFormatException nfe)
             {
-                System.out.println("Arguments must all be floating numbers ");
+                System.out.println("Arguments must all be numbers");
             }
         }
         else
