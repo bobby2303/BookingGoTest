@@ -61,8 +61,9 @@ public class Client
                     options[i] = new Option("DAVE", (String) obj.get("car_type"), (int) obj.get("price"));
                 }
 
-                System.out.println(Arrays.toString(options));
+                Arrays.sort(options);
 
+                System.out.println(Arrays.toString(options));
 
 
             }
