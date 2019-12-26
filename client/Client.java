@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit ;
 
 public class Client
 {
-    private static final OkHttpClient client = new OkHttpClient().newBuilder().readTimeout(10000, TimeUnit.MILLISECONDS).build();
+    private static final OkHttpClient client = new OkHttpClient().newBuilder().readTimeout(2000, TimeUnit.MILLISECONDS).build();
 
     private static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
 
@@ -68,18 +68,25 @@ public class Client
                     if(!(carType.equals("PEOPLE_CARRIER") || carType.equals("LUXURY_PEOPLE_CARRIER") || carType.equals("MINIBUS")))
                     {
                         Option o = comparePrice(options, supplier, carType, price);
-                        options.add(o);
+                        if(!(options.contains(o)))
+                            options.add(o);
                     }
 
                 }
                 else if(maxPassengers <= 6 && maxPassengers > 4)
                 {
                     if(!(carType.equals("MINIBUS")))
-                        options.add(new Option(supplier, carType, price));
+                    {
+                        Option o = comparePrice(options, supplier, carType, price);
+                        if(!(options.contains(o)))
+                            options.add(o);
+                    }
                 }
                 else if(maxPassengers <= 16 && maxPassengers > 6)
                 {
-                    options.add(new Option(supplier, carType, price));
+                    Option o = comparePrice(options, supplier, carType, price);
+                    if(!(options.contains(o)))
+                        options.add(o);
                 }
             }
         }
