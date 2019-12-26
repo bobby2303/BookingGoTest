@@ -41,4 +41,18 @@ public class Option implements Comparable<Option>
         return price;
     }
 
+    public void setSupplier(String supplier)
+    {
+        this.supplier = supplier;
+    }
+
+    public void setCarType(String carType)
+    {
+        this.carType = carType;
+    }
+
+    public void setPrice(int price)
+    {
+        this.price = price;
+    }
 }

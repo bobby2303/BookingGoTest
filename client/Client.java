@@ -48,7 +48,7 @@ public class Client
         }
     }
 
-    public static List<Option> comparePrices(JSONObject[] jsons, int maxPassengers)
+    private static List<Option> getOptions(JSONObject[] jsons, int maxPassengers)
     {
         List<Option> options = new ArrayList<Option>();
         for(JSONObject json: jsons)
@@ -65,8 +65,12 @@ public class Client
 
                 if(maxPassengers <= 4 && maxPassengers > 0)
                 {
-                    if(!(carType.equals("PEOPLE_CARRIER") || carType.equals("LUXURY_PEOPLE_CARRIER") ||carType.equals("MINIBUS")))
-                        options.add(new Option(supplier, carType, price));
+                    if(!(carType.equals("PEOPLE_CARRIER") || carType.equals("LUXURY_PEOPLE_CARRIER") || carType.equals("MINIBUS")))
+                    {
+                        Option o = comparePrice(options, supplier, carType, price);
+                        options.add(o);
+                    }
+
                 }
                 else if(maxPassengers <= 6 && maxPassengers > 4)
                 {
@@ -81,6 +85,32 @@ public class Client
         }
         return options;
     }
+
+    private static Option comparePrice(List<Option> options, String newSupplier, String newCarType, int newPrice)
+    {
+        for(Option o : options)
+        {
+            String oldCarType = o.getCarType();
+            if(oldCarType.equals(newCarType))
+            {
+                if(newPrice < o.getPrice())
+                {
+                    o.setPrice(newPrice);
+                    o.setSupplier(newSupplier);
+                }
+                return o;
+            }
+        }
+        Option unchangedOption = new Option(newSupplier, newCarType, newPrice);
+        return unchangedOption;
+        //Get the option
+        //Do to String
+        //contains (new Car Type)
+        //comrapre price
+        // return true or false
+        // whether to add this new car type to the list or not
+    }
+
 
     public static void main (String[] args) throws IOException
     {
@@ -110,7 +140,7 @@ public class Client
                 jsons[1] = getRequest(EricURL);
                 jsons[2] = getRequest(JeffURL);
 
-                List<Option> options = comparePrices(jsons, maxPassengers);
+                List<Option> options = getOptions(jsons, maxPassengers);
 
 
 
