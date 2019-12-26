@@ -13,20 +13,32 @@ public class Option implements Comparable<Option>
 
     public String toString()
     {
-        return supplier + " " + carType + " " + price;
+        return carType + " - " + supplier + " - " + price;
     }
 
-    public int getPrice()
+
+    public int compareTo(Option comparePrice)
     {
-        return price;
-    }
-
-    public int compareTo(Option comparePrice) {
 
         int compare = ((Option) comparePrice).getPrice();
 
         return compare - this.price;
 
+    }
+
+    public String getSupplier()
+    {
+        return supplier;
+    }
+
+    public String getCarType()
+    {
+        return carType;
+    }
+
+    public int getPrice()
+    {
+        return price;
     }
 
 }

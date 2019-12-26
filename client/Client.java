@@ -54,9 +54,17 @@ public class Client
                 try (Response response = client.newCall(request).execute())
                 {
                     json = parseRequest(response.body().string());
+                    if(response.code() != 200)
+                    {
+                        System.out.println(json.get("status") + ": " + json.get("error"));
+                        System.out.println(json.get("message"));
+                        System.exit(1);
+                    }
+
+
                 }
 
-                System.out.println(json.toString());
+                //System.out.println(json.toString());
 
                 //Create Options[] array
                 JSONArray jsonArray = (JSONArray) json.get("options");
@@ -65,6 +73,7 @@ public class Client
                 {
                     JSONObject obj = jsonArray.getJSONObject(i);
                     String carType = (String) obj.get("car_type");
+
                     if(maxPassengers <= 4 && maxPassengers > 0)
                     {
                         if(!(carType.equals("PEOPLE_CARRIER") || carType.equals("LUXURY_PEOPLE_CARRIER") ||carType.equals("MINIBUS")))
@@ -86,7 +95,7 @@ public class Client
 
                 for(Option o: options)
                 {
-                    System.out.println(o.toString());
+                    System.out.printf("%-21s - %-4s - %-8d \n", o.getCarType(), o.getSupplier(), o.getPrice());
                 }
 
 
@@ -104,10 +113,6 @@ public class Client
     }
 }
 
-/*
-                    int responseCode = response.code();
-                    System.out.println("RESPONSE CODE:" + responseCode);
-                    */
 
 //https://techtest.rideways.com/dave?dropoff=51.470020,-0.454295&pickup=52.167241,-0.443187
 //java -cp .:json-20190722.jar:okhttp-4.2.2.jar:okio-2.0.0.jar:kotlin-stdlib-common-1.3.50.jar:kotlin-stdlib-1.3.50.jar Client 51.470020 -0.454295 58.167241 -0.53187
