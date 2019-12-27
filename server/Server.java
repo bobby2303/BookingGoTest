@@ -32,6 +32,7 @@ public class Server implements HttpHandler
 
     public void handle(HttpExchange t) throws IOException
     {
+        JSONObject results = new JSONObject();
         URI uri = t.getRequestURI();
         Map params=getQueryMap(uri.toString());
 
@@ -50,10 +51,25 @@ public class Server implements HttpHandler
 
             List<Option> options = FindOptions.run(pickupLat, pickupLong, dropoffLat, dropoffLong, maxPassengers);
 
+            results = new JSONObject();
+            results.put("dropoff", dropoff);
+            results.put("pickup", pickup);
+            results.put("maxPassengers", maxPassengers);
+            JSONArray jsonArray = new JSONArray();
+
+
             for(Option o: options)
             {
                 System.out.printf("%-21s - %-4s - %-8d \n", o.getCarType(), o.getSupplier(), o.getPrice());
+                JSONObject jsonOptions = new JSONObject();
+                jsonOptions.put("car_type", o.getCarType());
+                jsonOptions.put("supplier_id", o.getSupplier());
+                jsonOptions.put("price",  o.getPrice());
+                jsonArray.put(jsonOptions);
+
             }
+
+            results.put("options", jsonArray);
 
         }
         catch(Exception e)
@@ -64,7 +80,7 @@ public class Server implements HttpHandler
 
 
         //Header Handling
-        String response = "Test";
+        String response = results.toString();
         t.getResponseHeaders().add("Content-Type:", "application/json");
         t.sendResponseHeaders(200, response.length());
         OutputStream os = t.getResponseBody();
