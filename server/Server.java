@@ -19,7 +19,7 @@ public class Server implements HttpHandler
         Map<String, String> map = new HashMap<String, String>();
         for (String param : params)
         {
-            String [] p=param.split("=");
+            String[] p = param.split("=");
             String name = p[0];
             if(p.length>1)
             {
@@ -35,13 +35,34 @@ public class Server implements HttpHandler
         URI uri = t.getRequestURI();
         Map params=getQueryMap(uri.toString());
 
-        String dropoff=(String)params.get("dropoff");
-        String pickup=(String)params.get("pickup");
-        String maxPassengers=(String)params.get("maxPassengers");
+        try
+        {
+            String dropoff=(String)params.get("dropoff");
+            Float dropoffLat = Float.parseFloat(dropoff.split("\\,")[0]);
+            Float dropoffLong = Float.parseFloat(dropoff.split("\\,")[1]);
+            String pickup=(String)params.get("pickup");
+            Float pickupLat = Float.parseFloat(pickup.split("\\,")[0]);
+            Float pickupLong = Float.parseFloat(pickup.split("\\,")[1]);
+            String sMaxPassengers=(String)params.get("maxPassengers");
+            int maxPassengers = Integer.parseInt(sMaxPassengers);
 
-        System.out.println("Dropoff: " + dropoff + " Pickup: " + pickup + " MaxPass: " + maxPassengers);
+            System.out.println("Dropoff: " + dropoffLat + "," + dropoffLong + " Pickup: " + pickupLat+ "," +  pickupLong + " MaxPass: " + maxPassengers);
 
-        
+            List<Option> options = FindOptions.run(pickupLat, pickupLong, dropoffLat, dropoffLong, maxPassengers);
+
+            for(Option o: options)
+            {
+                System.out.printf("%-21s - %-4s - %-8d \n", o.getCarType(), o.getSupplier(), o.getPrice());
+            }
+
+        }
+        catch(Exception e)
+        {
+            System.out.println("ERROR " + e);
+        }
+
+
+
         //Header Handling
         String response = "Test";
         t.getResponseHeaders().add("Content-Type:", "application/json");
@@ -67,6 +88,6 @@ public class Server implements HttpHandler
         }
     }
 }
-//localhost:8080/taxis?name=Marcin&dropoff=10&pickup=12121,1&maxPassengers=16
+//localhost:8080/taxis?name=Marcin&dropoff=51.470020,-0.454295&pickup=52.167241,-0.443187&maxPassengers=16
 ////https://techtest.rideways.com/dave?dropoff=51.470020,-0.454295&pickup=52.167241,-0.443187
 //http://localhost:8080/taxis/?name=Marcin&dropoff=10

@@ -16,7 +16,7 @@ public class FindOptions
     private static final OkHttpClient client = new OkHttpClient().newBuilder().readTimeout(2000, TimeUnit.MILLISECONDS).build();
     private static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
 
-    private JSONObject parseRequest(String jsonString)
+    private static JSONObject parseRequest(String jsonString)
     {
         JSONTokener jt = new JSONTokener(jsonString);
         String output = "";
@@ -29,7 +29,7 @@ public class FindOptions
         return json;
     }
 
-    private JSONObject getRequest(String url, String supplier)
+    private static JSONObject getRequest(String url, String supplier)
     {
         JSONObject json = null;
         //GET Request
@@ -39,7 +39,8 @@ public class FindOptions
             json = parseRequest(response.body().string());
             if(response.code() != 200)
             {
-                System.out.println(supplier + " ERROR " + json.get("status") + ": " + json.get("error") + " - " + json.get("message"));
+                System.out.println("GET ERROR: " + json.get("status") + ": " + json.get("error") + " - " + json.get("message") + " from " +supplier);
+                json = null;
             }
             System.out.println(json.toString());
             return json;
@@ -51,7 +52,7 @@ public class FindOptions
         return json;
     }
 
-    private List<Option> getOptions(List<JSONObject> jsons, int maxPassengers)
+    private static List<Option> getOptions(List<JSONObject> jsons, int maxPassengers)
     {
         List<Option> options = new ArrayList<Option>();
         try
@@ -94,12 +95,12 @@ public class FindOptions
         }
         catch(Exception e)
         {
-            System.out.println("ERROR");
+            System.out.println("ERROR in getOptions" + e);
         }
         return options;
     }
 
-    private Option comparePrice(List<Option> options, String newSupplier, String newCarType, int newPrice)
+    private static Option comparePrice(List<Option> options, String newSupplier, String newCarType, int newPrice)
     {
         for(Option o : options)
         {
@@ -118,7 +119,7 @@ public class FindOptions
         return unchangedOption;
     }
 
-    public List<Option> run(float pickupLatitude, float pickupLongitude, float dropoffLatitude, float dropoffLongitude, int maximumPassengers) throws IOException
+    public static List<Option> run(float pickupLatitude, float pickupLongitude, float dropoffLatitude, float dropoffLongitude, int maximumPassengers) throws IOException
     {
         try
         {

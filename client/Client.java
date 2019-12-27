@@ -39,7 +39,8 @@ public class Client
             json = parseRequest(response.body().string());
             if(response.code() != 200)
             {
-                System.out.println(supplier + " ERROR " + json.get("status") + ": " + json.get("error") + " - " + json.get("message"));
+                System.out.println("GET ERROR: " + json.get("status") + ": " + json.get("error") + " - " + json.get("message") + " from " +supplier);
+                json = null;
             }
             System.out.println(json.toString());
             return json;
