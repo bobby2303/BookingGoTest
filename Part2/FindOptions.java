@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit ;
 public class FindOptions
 {
     private static final OkHttpClient client = new OkHttpClient().newBuilder()
-            .readTimeout(2000, TimeUnit.MILLISECONDS).build();                                                          //Set timeout of 2 seconds for response from API
+            .readTimeout(5000, TimeUnit.MILLISECONDS).build();                                                          //Set timeout of 2 seconds for response from API
     private static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
 
     /**

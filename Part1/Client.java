@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit ;
 public class Client
 {
     private static final OkHttpClient client = new OkHttpClient().newBuilder()
-            .readTimeout(2000, TimeUnit.MILLISECONDS).build();                                                          //Set timeout of 2 seconds for response from API
+            .readTimeout(5000, TimeUnit.MILLISECONDS).build();                                                          //Set timeout of 2 seconds for response from API
     private static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
 
     /**
@@ -59,7 +59,7 @@ public class Client
                         + json.get("message") + " from " +supplier);
                 json = null;                                                                                            //Return a null JSONObject
             }
-            System.out.println(json.toString());                                                                        //Output the result of the GET request to terminal
+            //System.out.println(json.toString());                                                                        //Output the result of the GET request to terminal
             return json;
         }
         catch(Exception e)
