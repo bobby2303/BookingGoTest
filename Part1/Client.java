@@ -171,10 +171,10 @@ public class Client
             float dropoffLong = Float.parseFloat(args[3]);
             if(args.length > 4)
             {
-                if(args[4].equals("DAVE"))
+                if(args[4].equals("DAVE"))                                                                              //Part 1 A - filter for only Dave
                     onlyDave = true;
                 else
-                    maxPassengers = Integer.parseInt(args[4]);
+                    maxPassengers = Integer.parseInt(args[4]);                                                          //For Part 1 B - filter by number of passengers parameter
             }
 
             if(maxPassengers > 16 || maxPassengers < 1)                                                                 //Validation on number of passengers
