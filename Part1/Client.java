@@ -162,13 +162,20 @@ public class Client
     {
         try
         {
-            int maxPassengers = 16;
+            int maxPassengers = 16;                                                                                     //Default max passengers of 16 (maximum)
+            boolean onlyDave = false;
             //Parse parameters as variables
             float pickupLat = Float.parseFloat(args[0]);
             float pickupLong = Float.parseFloat(args[1]);
             float dropoffLat = Float.parseFloat(args[2]);
             float dropoffLong = Float.parseFloat(args[3]);
-            if(args.length > 4) maxPassengers = Integer.parseInt(args[4]);
+            if(args.length > 4)
+            {
+                if(args[4].equals("DAVE"))
+                    onlyDave = true;
+                else
+                    maxPassengers = Integer.parseInt(args[4]);
+            }
 
             if(maxPassengers > 16 || maxPassengers < 1)                                                                 //Validation on number of passengers
             {
@@ -181,12 +188,22 @@ public class Client
             String JeffURL = "https://techtest.rideways.com/jeff?pickup=" + pickupLat + "," + pickupLong + "&dropoff=" + dropoffLat + "," + dropoffLong;
 
             List<JSONObject> jsons = new ArrayList<JSONObject>();                                                       //List of JSONObject to store response from GET request from APIs
-            JSONObject daveJSON = getRequest(DaveURL, "Dave");
-            if(daveJSON != null) jsons.add(daveJSON);                                                                   //Add the response from GET: DaveURL if not null
-            JSONObject ericJSON = getRequest(EricURL, "Eric");
-            if(ericJSON != null) jsons.add(ericJSON);                                                                   //Add the response from GET: EricURL if not null
-            JSONObject jeffJSON = getRequest(JeffURL, "Jeff");
-            if(jeffJSON != null) jsons.add(jeffJSON);                                                                   //Add the response from GET: JeffURL if not null
+
+            if(onlyDave)                                                                                                //For Part1A - filter for just Dave results
+            {
+                JSONObject daveJSON = getRequest(DaveURL, "Dave");
+                if(daveJSON != null) jsons.add(daveJSON);                                                               //Add the response from GET: DaveURL if not null
+            }
+            else
+            {
+
+                JSONObject daveJSON = getRequest(DaveURL, "Dave");
+                if(daveJSON != null) jsons.add(daveJSON);
+                JSONObject ericJSON = getRequest(EricURL, "Eric");
+                if(ericJSON != null) jsons.add(ericJSON);                                                                   //Add the response from GET: EricURL if not null
+                JSONObject jeffJSON = getRequest(JeffURL, "Jeff");
+                if(jeffJSON != null) jsons.add(jeffJSON);                                                                   //Add the response from GET: JeffURL if not null
+            }
 
             List<Option> options = getOptions(jsons, maxPassengers);                                                    //Retrieve a completed List of all the cheapest options by calling getOptions
 
