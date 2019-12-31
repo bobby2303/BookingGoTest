@@ -162,12 +162,13 @@ public class Client
     {
         try
         {
+            int maxPassengers = 16;
             //Parse parameters as variables
             float pickupLat = Float.parseFloat(args[0]);
             float pickupLong = Float.parseFloat(args[1]);
             float dropoffLat = Float.parseFloat(args[2]);
             float dropoffLong = Float.parseFloat(args[3]);
-            int maxPassengers = Integer.parseInt(args[4]);
+            if(args.length > 4) maxPassengers = Integer.parseInt(args[4]);
 
             if(maxPassengers > 16 || maxPassengers < 1)                                                                 //Validation on number of passengers
             {
